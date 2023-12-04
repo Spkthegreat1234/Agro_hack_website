@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Task Scheduler</title>
+    <style>
+        body {
+            font-family: 'Courier New', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #2f5822bd;
+            color: #fff;
+            text-align: center;
+            padding: 1em;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2em auto;
+            text-align: center;
+            
+        }
+
+        #task-form {
+            margin-bottom: 20px;
+        }
+
+        #tasks-list, #upcoming-tasks {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .task {
+            background-color: #fff;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task input[type="checkbox"] {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="images/logo.png" align="left" height="50px" width="100px"/>
+
+        <h1 align="left">AgroGuru</h1>
+        <h1>Farm Task Scheduler</h1>
+    </header>
+
+    <div class="container">
+       
+        <form id="task-form">
+            <label for="task">Task:</label>
+            <input type="text" id="task" required>
+
+            <label for="deadline">Deadline:</label>
+            <input type="date" id="deadline" required>
+
+            <button type="button" onclick="addTask()">Add Task</button>
+        </form>
+
+        <h2>Tasks</h2>
+        <ul id="tasks-list"></ul>
+
+        <h2>Upcoming Tasks for the Week</h2>
+        <ul id="upcoming-tasks"></ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTasks();
+            showUpcomingTasks();
+        });
+
+        function addTask() {
+            const taskInput = document.getElementById('task');
+            const deadlineInput = document.getElementById('deadline');
+            const tasksList = document.getElementById('tasks-list');
+
+            if (taskInput.value && deadlineInput.value) {
+                const taskItem = document.createElement('li');
+                taskItem.classList.add('task');
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+
+                const taskText = document.createElement('span');
+                taskText.textContent = `${taskInput.value} - Deadline: ${deadlineInput.value}`;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', function() {
+                    tasksList.removeChild(taskItem);
+                    saveTasks();
+                    showUpcomingTasks();
+                });
+
+                taskItem.appendChild(checkbox);
+                taskItem.appendChild(taskText);
+                taskItem.appendChild(deleteButton);
+
+                tasksList.appendChild(taskItem);
+
+                // Clear input fields
+                taskInput.value = '';
+                deadlineInput.value = '';
+
+                saveTasks();
+                showUpcomingTasks();
+            }
+        }
+
+        function loadTasks() {
+            const tasksList = document.getElementById('tasks-list');
+            tasksList.innerHTML = '';
+
+            const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            
+            savedTasks.forEach(function(task) {
+                const taskItem = document.createElement('li');
+                taskItem.classList.add('task');
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+
+                const taskText = document.createElement('span');
+                taskText.textContent = task;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', function() {
+                    tasksList.removeChild(taskItem);
+                    savedTasks.splice(savedTasks.indexOf(task), 1);
+                    localStorage.setItem('tasks', JSON.stringify(savedTasks));
+                    showUpcomingTasks();
+                });
+
+                taskItem.appendChild(checkbox);
+                taskItem.appendChild(taskText);
+                taskItem.appendChild(deleteButton);
+
+                tasksList.appendChild(taskItem);
+            });
+
+            showUpcomingTasks();
+        }
+
+        function saveTasks() {
+            const tasksList = document.getElementById('tasks-list');
+            const tasks = Array.from(tasksList.children).map(function(taskItem) {
+                return taskItem.querySelector('span').textContent;
+            });
+
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        function showUpcomingTasks() {
+            const upcomingTasksList = document.getElementById('upcoming-tasks');
+            upcomingTasksList.innerHTML = '';
+
+            const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+            const today = new Date();
+            const nextWeek = new Date(today);
+            nextWeek.setDate(today.getDate() + 7);
+
+            savedTasks.forEach(function(task) {
+                const taskDeadline = new Date(task.split(' - Deadline: ')[1]);
+
+                if (taskDeadline <= nextWeek) {
+                    const taskItem = document.createElement('li');
+                    taskItem.textContent = task;
+                    upcomingTasksList.appendChild(taskItem);
+                }
+            });
+        }
+    </script>
+    <form>
+        <input type="button" value="Go back!" onclick="history.back()">
+       </form>
+</body>
+</html>

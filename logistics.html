@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goods Transport Tracker</title>
+    <style>
+        body {
+            font-family: 'Georgia', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #2f5822bd;
+            color: #fff;
+            text-align: center;
+            padding: 1em;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2em auto;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        #calculate-button {
+            padding: 10px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Goods Transport Tracker</h1>
+    </header>
+
+    <div class="container">
+        <label for="start-location">Start Location:</label>
+        <input type="text" id="start-location" placeholder="Enter start location">
+
+        <label for="end-location">End Location:</label>
+        <input type="text" id="end-location" placeholder="Enter end location">
+
+        <button id="calculate-button" onclick="calculateTime()">Calculate Time</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateTime() {
+            const startLocation = document.getElementById('start-location').value;
+            const endLocation = document.getElementById('end-location').value;
+            const resultDiv = document.getElementById('result');
+
+            if (startLocation && endLocation) {
+                // Replace this with your logic to calculate transport time
+                const transportTime = calculateTransportTime(startLocation, endLocation);
+
+                resultDiv.innerHTML = `
+                    <h2>Transport Information</h2>
+                    <p>From: ${startLocation}</p>
+                    <p>To: ${endLocation}</p>
+                    <p>Estimated Transport Time: ${transportTime} hours</p>
+                `;
+            } else {
+                resultDiv.innerHTML = `<p>Please enter both start and end locations.</p>`;
+            }
+        }
+
+        function calculateTransportTime(startLocation, endLocation) {
+            // Replace this with your logic to calculate transport time
+            // This is a placeholder, you might use APIs, databases, or other means
+            // to get accurate transport time based on your specific requirements.
+            return Math.floor(Math.random() * 10) + 1; // Random number between 1 and 10 as a placeholder
+        }
+    </script>
+    <form>
+        <input type="button" value="Go back!" onclick="history.back()">
+       </form>
+</body>
+</html>

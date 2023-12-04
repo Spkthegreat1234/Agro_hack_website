@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrient Tracking</title>
+    <style>
+        body {
+            font-family: "Courier New", sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #2f5822bd;
+        }
+
+        #nutrient-container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            width: 80%;
+        }
+
+        input, button {
+            margin: 10px;
+            padding: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .ideal {
+            color: orange;
+        }
+
+        .low {
+            color: red;
+        }
+
+        .high {
+            color: green;
+        }
+
+        canvas {
+            max-width: 80%;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div id="nutrient-container">
+    <h1>Nutrient Tracking</h1>
+    <label for="numberOfPlants">Number of Plants:</label>
+    <input type="number" id="numberOfPlants" placeholder="Enter the number of plants">
+    <button onclick="generateTable()">Generate Table</button>
+
+    <div id="nutrientTableContainer"></div>
+    <canvas id="nutrientChart"></canvas>
+
+    <script>
+        function generateTable() {
+            const numberOfPlants = document.getElementById('numberOfPlants').value;
+            const nutrientTableContainer = document.getElementById('nutrientTableContainer');
+
+            if (!numberOfPlants) {
+                alert('Please enter the number of plants');
+                return;
+            }
+
+            let tableHTML = `
+                <table>
+                    <tr>
+                        <th>Plant</th>
+                        <th>Nitrogen</th>
+                        <th>Phosphorous</th>
+                        <th>Sulfur</th>
+                        <th>Magnesium</th>
+                    </tr>
+            `;
+
+            for (let i = 1; i <= numberOfPlants; i++) {
+                const nutrientText = prompt(`Enter nutrient levels for Plant ${i} (format: nitrogen phosphorous sulfur magnesium)`);
+
+                if (!nutrientText) {
+                    alert('Please enter nutrient levels for all plants');
+                    return;
+                }
+
+                const [nitrogen, phosphorous, sulfur, magnesium] = nutrientText.split(' ');
+
+                tableHTML += `
+                    <tr>
+                        <td>Plant ${i}</td>
+                        <td class="${checkStatus(nitrogen)}">${checkStatusText(nitrogen)}</td>
+                        <td class="${checkStatus(phosphorous)}">${checkStatusText(phosphorous)}</td>
+                        <td class="${checkStatus(sulfur)}">${checkStatusText(sulfur)}</td>
+                        <td class="${checkStatus(magnesium)}">${checkStatusText(magnesium)}</td>
+                    </tr>
+                `;
+            }
+
+            tableHTML += `</table>`;
+            nutrientTableContainer.innerHTML = tableHTML;
+
+            generateChart(numberOfPlants);
+        }
+
+        function generateChart(numberOfPlants) {
+            const labels = [];
+            const datasets = [
+                { label: 'Nitrogen', data: [], borderColor: 'orange' },
+                { label: 'Phosphorous', data: [], borderColor: 'red' },
+                { label: 'Sulfur', data: [], borderColor: 'green' },
+                { label: 'Magnesium', data: [], borderColor: 'blue' }
+            ];
+
+            for (let i = 1; i <= numberOfPlants; i++) {
+                labels.push(`Plant ${i}`);
+                const nutrientText = prompt(`Enter nutrient levels for Plant ${i} (format: nitrogen phosphorous sulfur magnesium)`);
+                const [nitrogen, phosphorous, sulfur, magnesium] = nutrientText.split(' ');
+
+                datasets[0].data.push(nitrogen);
+                datasets[1].data.push(phosphorous);
+                datasets[2].data.push(sulfur);
+                datasets[3].data.push(magnesium);
+            }
+
+            const ctx = document.getElementById('nutrientChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                }
+            });
+        }
+
+        function checkStatus(value) {
+            const idealLevel = {
+                nitrogen: 100,
+                phosphorous: 15,
+                sulfur: 9,
+                magnesium: 10
+            };
+
+            const tolerance = 5;
+
+            if (Math.abs(value - idealLevel.nitrogen) <= tolerance) {
+                return 'ideal';
+            } else if (value < idealLevel.nitrogen) {
+                return 'low';
+            } else {
+                return 'high';
+            }
+        }
+
+        function checkStatusText(value) {
+            const status = checkStatus(value);
+
+            switch (status) {
+                case 'ideal':
+                    return 'Ideal';
+                case 'low':
+                    return 'Low';
+                case 'high':
+                    return 'High';
+                default:
+                    return '';
+            }
+        }
+    </script>
+</div>
+<form>
+    <input type="button" value="Go back!" onclick="history.back()">
+   </form>
+</body>
+</html>

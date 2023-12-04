@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Rotation Planner</title>
+  <style>
+    body {
+      font-family: 'Courier New', sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-image: url("images/croprot.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+      
+  
+  h1 {
+    color: #333;
+  }
+  
+  label {
+    display: block;
+    margin: 10px 0;
+    font-size: 18px;
+  }
+  
+  select {
+    padding: 8px;
+    font-size: 16px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  #result {
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin-bottom: 10px;
+  }
+    
+
+    h1 {
+      color: #333;
+      text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            width: 80%;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0;
+      font-size: 18px;
+      text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            width: 80%;
+    }
+
+    select {
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      margin-top: 20px;
+
+      text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            width: 80%;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Crop Rotation Planner</h1>
+
+  <label for="fieldCount">Select the number of fields:</label>
+  <select id="fieldCount">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+
+  <button onclick="generateRotation()">Generate Rotation Plan</button>
+ 
+  <div id="result"></div>
+
+  <script>
+    function generateRotation() {
+      const fieldCount = document.getElementById("fieldCount").value;
+      const crops = ['Tomato', 'Legume', 'Onion', 'Carrot','Rice','Maize','Bajra','Jowar','Ragi','Arhar/Tur','Moong','Urad','Wheat','Barley','Mustard','Chickpea','Lentils','Cucumber','Watermelon','Muskmelon','Pumpkin'];
+
+      const seasons = {
+        'Tomato': 'Summer',
+        'Legume': 'Monsoon',
+        'Onion': 'Winter',
+        'Carrot': 'Spring',
+        'Rice': 'Monsoon',  
+        'Maize':'Monsoon',
+        'Bajra':'Monsoon',
+        'Jowar':'Monsoon',
+        'Ragi':'Monsoon',
+        'Arhar/Tur':'Monsoon',
+        'Moong':'Monsoon',
+        'Urad':'Monsoon',
+        'Wheat': 'Winter',
+        'Barley': 'Winter',
+        'Mustard': 'Winter' ,
+        'Chickpea': 'Winter',
+        'Lentils': 'Winter' , 
+        'Cucumber' : 'Summer',
+        'Watermelon' : 'Summer',
+        'Muskmelon' : 'Summer',
+        'Pumpkin' : 'Summer',
+        // Add more crops and seasons as needed
+      };
+
+      const rotationPlan = [];
+
+      for (let year = 1; year <= fieldCount; year++) {
+        const yearRotation = [];
+        for (let i = 0; i < fieldCount; i++) {
+          const cropIndex = (i + year - 1) % crops.length;
+          const fieldNumber = i + 1;
+          const crop = crops[cropIndex];
+          const season = seasons[crop];
+
+          yearRotation.push(`Year ${year}: Plant ${crop} in field ${fieldNumber} (${season})`);
+        }
+        rotationPlan.push(yearRotation);
+      }
+
+      displayRotationPlan(rotationPlan);
+    }
+
+    function displayRotationPlan(plan) {
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = '<h2>Rotation Plan:</h2>';
+      
+      plan.forEach((yearRotation, index) => {
+        resultDiv.innerHTML += `<h3>Year ${index + 1}</h3><ul>`;
+        yearRotation.forEach(item => {
+          resultDiv.innerHTML += `<li>${item}</li>`;
+        });
+        resultDiv.innerHTML += '</ul>';
+      });
+    }
+    
+
+  </script>
+<form>
+  <input type="button" value="Go back!" onclick="history.back()">
+ </form>
+</body>
+</html>
